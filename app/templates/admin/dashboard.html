@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/admin_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Admin Dashboard</h1>
+                <p class="text-muted-premium mb-0">Centralized analytics for users, deposits, withdrawals, and investments.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-people"></i></div>
+                        <p class="metric-label">Total Users</p>
+                        <p class="metric-value">{{ total_users }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-arrow-down-circle"></i></div>
+                        <p class="metric-label">Approved Deposits</p>
+                        <p class="metric-value">${{ '%.2f'|format(total_deposits) }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-arrow-up-circle"></i></div>
+                        <p class="metric-label">Approved Withdrawals</p>
+                        <p class="metric-value">${{ '%.2f'|format(total_withdrawals) }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                        <p class="metric-label">Active Investments</p>
+                        <p class="metric-value">{{ active_investments }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-hourglass-split"></i></div>
+                        <p class="metric-label">Pending Deposits</p>
+                        <p class="metric-value">{{ pending_deposits }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-exclamation-circle"></i></div>
+                        <p class="metric-label">Pending Withdrawals</p>
+                        <p class="metric-value">{{ pending_withdrawals }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

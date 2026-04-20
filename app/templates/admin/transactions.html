@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Admin Transactions{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/admin_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>All Transactions</h1>
+                <p class="text-muted-premium mb-0">Global transaction visibility across deposits, withdrawals, and investments.</p>
+            </div>
+
+            <div class="table-panel">
+                <table class="table-premium">
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td>{{ tx.id }}</td>
+                        <td>{{ tx.user.email }}</td>
+                        <td>{{ tx.tx_type|title }}</td>
+                        <td>${{ '%.2f'|format(tx.amount) }}</td>
+                        <td><span class="status-badge status-{{ tx.status }}">{{ tx.status|title }}</span></td>
+                        <td>{{ tx.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="empty-state">No transactions found.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

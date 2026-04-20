@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6" data-aos="fade-up">
+                <div class="auth-card">
+                    <span class="badge-premium mb-3"><i class="bi bi-person-plus"></i> Create Account</span>
+                    <h1 class="section-title mb-2">Start your account</h1>
+                    <p class="text-muted-premium mb-4">Create a secure account and begin using the premium fintech dashboard.</p>
+
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        {{ form.referral_code() }}
+
+                        {% if form.referral_code.data %}
+                        <div class="content-card mb-4 p-3">
+                            <small class="text-muted-premium d-block">Referral Applied</small>
+                            <strong>{{ form.referral_code.data }}</strong>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.name.label.text }}</label>
+                            {{ form.name(class_='form-control', placeholder='Full name') }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.email.label.text }}</label>
+                            {{ form.email(class_='form-control', placeholder='name@example.com') }}
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.password.label.text }}</label>
+                                {{ form.password(class_='form-control', placeholder='Password') }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.confirm_password.label.text }}</label>
+                                {{ form.confirm_password(class_='form-control', placeholder='Confirm password') }}
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-4 mb-4">
+                            {{ form.accept_terms(class_='form-check-input') }}
+                            <label class="form-check-label text-muted-premium">
+                                {{ form.accept_terms.label.text }}
+                            </label>
+                        </div>
+
+                        <div class="d-grid">
+                            {{ form.submit(class_='btn btn-premium') }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

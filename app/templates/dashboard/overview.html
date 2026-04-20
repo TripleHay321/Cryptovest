@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Dashboard Overview</h1>
+                <p class="text-muted-premium mb-0">
+                    Monitor balances, investments, and portfolio trend in real time.
+                </p>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-wallet2"></i></div>
+                        <p class="metric-label">Available Balance</p>
+                        <p class="metric-value">${{ '%.2f'|format(current_user.usd_balance) }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-bar-chart-line"></i></div>
+                        <p class="metric-label">Total Invested</p>
+                        <p class="metric-value">${{ '%.2f'|format(total_invested) }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                        <p class="metric-label">Projected Portfolio Value</p>
+                        <p class="metric-value">${{ '%.2f'|format(projected_value) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <small class="text-muted-premium d-block">Live Analytics</small>
+                        <h5 class="mb-0">Portfolio Trend</h5>
+                    </div>
+                    <span class="pill-link"><i class="bi bi-activity"></i> Auto Refresh</span>
+                </div>
+
+                <div class="chart-wrap">
+                    <canvas id="portfolioTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="table-panel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <small class="text-muted-premium d-block">History</small>
+                        <h5 class="mb-0">Recent Transactions</h5>
+                    </div>
+                </div>
+
+                <table class="table-premium">
+                    <tr>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                    {% for tx in transactions %}
+                    <tr>
+                        <td>{{ tx.tx_type|title }}</td>
+                        <td>${{ '%.2f'|format(tx.amount) }}</td>
+                        <td>
+                            <span class="status-badge status-{{ tx.status }}">
+                                {{ tx.status|title }}
+                            </span>
+                        </td>
+                        <td>{{ tx.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="empty-state">No transactions yet.</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let portfolioTrendChart = null;
+
+async function loadPortfolioTrend() {
+    try {
+        const response = await fetch("{{ url_for('dashboard.portfolio_trend_data') }}", {
+            cache: "no-store"
+        });
+        const data = await response.json();
+
+        const ctx = document.getElementById("portfolioTrendChart");
+
+        if (portfolioTrendChart) {
+            portfolioTrendChart.data.labels = data.labels;
+            portfolioTrendChart.data.datasets[0].data = data.invested;
+            portfolioTrendChart.data.datasets[1].data = data.projected;
+            portfolioTrendChart.update();
+            return;
+        }
+
+        portfolioTrendChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: "Total Invested",
+                        data: data.invested,
+                        borderColor: "#29d3ff",
+                        backgroundColor: "rgba(41,211,255,0.08)",
+                        fill: false,
+                        tension: 0.35,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointBackgroundColor: "#29d3ff"
+                    },
+                    {
+                        label: "Projected Portfolio Value",
+                        data: data.projected,
+                        borderColor: "#18d39e",
+                        backgroundColor: "rgba(24,211,158,0.12)",
+                        fill: true,
+                        tension: 0.35,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointBackgroundColor: "#18d39e"
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: "#90a4c4"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: "#90a4c4" }
+                    },
+                    y: {
+                        grid: { color: "rgba(255,255,255,0.05)" },
+                        ticks: { color: "#90a4c4" }
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Failed to load portfolio trend:", error);
+    }
+}
+
+loadPortfolioTrend();
+setInterval(loadPortfolioTrend, 10000);
+</script>
+{% endblock %}

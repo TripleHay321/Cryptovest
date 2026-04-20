@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Admin Plans{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/admin_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Investment Plans</h1>
+                <p class="text-muted-premium mb-0">Create and manage plans inside the premium admin panel.</p>
+            </div>
+
+            <div class="content-card mb-4">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.name.label.text }}</label>
+                            {{ form.name(class_='form-control', placeholder='Plan name') }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.risk_level.label.text }}</label>
+                            {{ form.risk_level(class_='form-select') }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">{{ form.description.label.text }}</label>
+                            {{ form.description(class_='form-control', rows='4', placeholder='Plan description') }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.min_amount.label.text }}</label>
+                            {{ form.min_amount(class_='form-control', placeholder='Minimum amount') }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.duration_days.label.text }}</label>
+                            {{ form.duration_days(class_='form-control', placeholder='Duration in days') }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.target_return_percent.label.text }}</label>
+                            {{ form.target_return_percent(class_='form-control', placeholder='Projected return %') }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        {{ form.submit(class_='btn btn-premium') }}
+                    </div>
+                </form>
+            </div>
+
+            <div class="row g-4">
+                {% for plan in plans %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-premium h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="mb-0">{{ plan.name }}</h5>
+                            <span class="status-badge status-info">{{ plan.risk_level }}</span>
+                        </div>
+
+                        <p class="text-muted-premium">{{ plan.description }}</p>
+                        <hr class="premium-divider">
+
+                        <p class="mb-2"><strong>Minimum:</strong> ${{ '%.2f'|format(plan.min_amount) }}</p>
+                        <p class="mb-2"><strong>Duration:</strong> {{ plan.duration_days }} days</p>
+                        <p class="mb-2"><strong>Projected Return:</strong> {{ plan.target_return_percent }}%</p>
+                        <p class="mb-4"><strong>Status:</strong> {{ 'Active' if plan.is_active else 'Inactive' }}</p>
+
+                        <a class="btn btn-outline-premium" href="{{ url_for('admin.toggle_plan', plan_id=plan.id) }}">
+                            Toggle
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

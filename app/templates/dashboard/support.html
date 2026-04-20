@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Support{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Support Tickets</h1>
+                <p class="text-muted-premium mb-0">Open and track support requests from a unified premium ticket experience.</p>
+            </div>
+
+            <div class="content-card mb-4">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.subject.label.text }}</label>
+                        {{ form.subject(class_='form-control', placeholder='Ticket subject') }}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">{{ form.message.label.text }}</label>
+                        {{ form.message(class_='form-control', rows='5', placeholder='Describe your issue') }}
+                    </div>
+
+                    {{ form.submit(class_='btn btn-premium') }}
+                </form>
+            </div>
+
+            <div class="row g-4">
+                {% for ticket in tickets %}
+                <div class="col-12">
+                    <div class="card-premium">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                            <h5 class="mb-0">{{ ticket.subject }}</h5>
+                            <span class="status-badge status-{{ ticket.status }}">{{ ticket.status|title }}</span>
+                        </div>
+                        <p class="text-muted-premium">{{ ticket.message }}</p>
+                        {% if ticket.admin_reply %}
+                            <hr class="premium-divider">
+                            <p class="mb-0"><strong>Reply:</strong> {{ ticket.admin_reply }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <div class="content-card empty-state">No support tickets yet.</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

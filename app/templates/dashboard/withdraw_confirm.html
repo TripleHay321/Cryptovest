@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Withdrawal{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Confirm Withdrawal</h1>
+                <p class="text-muted-premium mb-0">
+                    Enter the 6-digit code sent to your email to complete this withdrawal request.
+                </p>
+            </div>
+
+            <div class="content-card mb-4">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <p class="metric-label">Amount</p>
+                            <p class="metric-value">${{ '%.2f'|format(verification.amount) }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <p class="metric-label">Asset</p>
+                            <p class="metric-value">{{ verification.asset }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <p class="metric-label">Expires</p>
+                            <p class="metric-value">10 min</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-4">
+                        <label class="form-label">{{ form.code.label.text }}</label>
+                        {{ form.code(class_='form-control', placeholder='Enter 6-digit code') }}
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        {{ form.submit(class_='btn btn-premium') }}
+                    </div>
+                </form>
+
+                <form method="POST" action="{{ url_for('dashboard.resend_withdrawal_code', verification_id=verification.id) }}" class="mt-3">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-outline-premium">Resend Code</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

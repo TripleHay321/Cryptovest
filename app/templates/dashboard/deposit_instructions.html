@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Deposit Instructions{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Complete Your Deposit</h1>
+                <p class="text-muted-premium mb-0">
+                    Send the exact amount below to the wallet address on the selected network.
+                </p>
+            </div>
+
+            <div class="content-card mb-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <p class="metric-label">Asset</p>
+                            <p class="metric-value">{{ tx.asset }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <p class="metric-label">Network</p>
+                            <p class="metric-value">{{ tx.network }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <p class="metric-label">Amount to Send</p>
+                            <p class="metric-value">{{ '%.2f'|format(tx.amount) }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="metric-card">
+                            <p class="metric-label">Status</p>
+                            <p class="metric-value">{{ tx.status|title }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h5 class="mb-3">Deposit Wallet Address</h5>
+                <div class="form-control mb-3" style="word-break: break-all;">
+                    {{ wallet_address }}
+                </div>
+
+                <p class="text-muted-premium">
+                    Send only <strong>{{ tx.asset }}</strong> via <strong>{{ tx.network }}</strong> to this address.
+                    Sending the wrong asset or wrong network may result in permanent loss.
+                </p>
+
+                {% if tx.reference %}
+                    <p class="text-muted-premium mb-0">
+                        <strong>Your Reference:</strong> {{ tx.reference }}
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

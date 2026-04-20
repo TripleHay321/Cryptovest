@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}CryptoVest - Premium Crypto Investment Platform{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <span class="badge">Premium fintech starter</span>
+            <h1>Invest in digital assets with a clean, modern platform.</h1>
+            <p>
+                Track balances, manage deposits and withdrawals, monitor investments,
+                and operate an admin control panel from one Flask application.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{{ url_for('auth.register') }}" class="btn">Create Account</a>
+                <a href="{{ url_for('main.plans') }}" class="btn btn-secondary">Explore Plans</a>
+            </div>
+
+            <p class="muted">⚠️ Returns are not guaranteed. Crypto assets are volatile and involve risk.</p>
+        </div>
+
+        <div class="card glass">
+            <h3>Platform Highlights</h3>
+            <div class="stats-grid">
+                <div><strong>24/7</strong><span>User dashboard access</span></div>
+                <div><strong>RBAC</strong><span>Admin controls</span></div>
+                <div><strong>Jinja</strong><span>Server-rendered pages</span></div>
+                <div><strong>SQL</strong><span>PostgreSQL-ready</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2>Featured Plans</h2>
+        <div class="cards">
+            {% for plan in plans %}
+            <div class="card">
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+                <ul class="list-clean">
+                    <li>Minimum: ${{ '%.2f'|format(plan.min_amount) }}</li>
+                    <li>Duration: {{ plan.duration_days }} days</li>
+                    <li>Projected return: {{ plan.target_return_percent }}%</li>
+                    <li>Risk: {{ plan.risk_level }}</li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="card"><p>No plans available yet.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

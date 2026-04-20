@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% block title %}Referrals{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Referral Program</h1>
+                <p class="text-muted-premium mb-0">
+                    Invite users with your referral link. Every 10 qualified referrals earns you ${{ '%.2f'|format(bonus_per_milestone) }} in investment credit.
+                </p>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-people"></i></div>
+                        <p class="metric-label">Total Referrals</p>
+                        <p class="metric-value">{{ total_referrals }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-person-check"></i></div>
+                        <p class="metric-label">Qualified Referrals</p>
+                        <p class="metric-value">{{ qualified_referrals }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-cash-stack"></i></div>
+                        <p class="metric-label">Total Bonus Earned</p>
+                        <p class="metric-value">${{ '%.2f'|format(total_bonus_earned) }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-wallet2"></i></div>
+                        <p class="metric-label">Investment Credit</p>
+                        <p class="metric-value">${{ '%.2f'|format(investment_credit_balance) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card mb-4">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-8">
+                        <small class="text-muted-premium d-block mb-2">Your Referral Link</small>
+                        <h5 class="mb-3">Share this link with new users</h5>
+
+                        <div class="input-group premium-input-group">
+                            <input type="text" id="referralLinkInput" class="form-control" value="{{ referral_link }}" readonly>
+                            <button class="btn btn-premium" type="button" id="copyReferralBtn">
+                                <i class="bi bi-copy"></i> Copy
+                            </button>
+                        </div>
+
+                        <div class="mt-3 d-flex flex-wrap gap-2">
+                            <span class="badge-premium">
+                                <i class="bi bi-ticket-perforated"></i>
+                                Code: {{ referral_code }}
+                            </span>
+                            <span class="badge-premium">
+                                <i class="bi bi-gift"></i>
+                                Reward: ${{ '%.2f'|format(bonus_per_milestone) }} / {{ milestone_size }} qualified users
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card-premium h-100">
+                            <small class="text-muted-premium d-block mb-2">Progress to Next Reward</small>
+                            <h6 class="mb-3">
+                                {% if remaining_to_next == 0 %}
+                                    Milestone reached
+                                {% else %}
+                                    {{ remaining_to_next }} more qualified referral{{ '' if remaining_to_next == 1 else 's' }} needed
+                                {% endif %}
+                            </h6>
+
+                            <div class="progress" style="height: 12px; border-radius: 999px; background: rgba(255,255,255,0.06);">
+                                <div
+                                    class="progress-bar"
+                                    role="progressbar"
+                                    style="width: {{ progress_percent }}%; background: linear-gradient(135deg, #3d8bff, #18d39e); border-radius: 999px;"
+                                ></div>
+                            </div>
+
+                            <div class="mt-3 text-muted-premium small">
+                                {{ progress_count }} / {{ milestone_size }} qualified referrals in current milestone
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="content-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted-premium d-block">Growth</small>
+                                <h5 class="mb-0">Referral Trend</h5>
+                            </div>
+                            <span class="pill-link"><i class="bi bi-graph-up"></i> Live DB Data</span>
+                        </div>
+                        <div class="chart-wrap">
+                            <canvas id="referralTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="content-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted-premium d-block">Breakdown</small>
+                                <h5 class="mb-0">Referral Status</h5>
+                            </div>
+                        </div>
+                        <div class="chart-wrap" style="height: 260px;">
+                            <canvas id="referralBreakdownChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-panel">
+                <div class="mb-3">
+                    <small class="text-muted-premium d-block">Referral History</small>
+                    <h5 class="mb-0">Recent Referred Users</h5>
+                </div>
+
+                <table class="table-premium">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Qualified On</th>
+                    </tr>
+
+                    {% for referral in referred_users %}
+                    <tr>
+                        <td>{{ referral.name }}</td>
+                        <td>{{ referral.email }}</td>
+                        <td>
+                            {% if referral.referral_qualified %}
+                                <span class="status-badge status-active">Qualified</span>
+                            {% else %}
+                                <span class="status-badge status-pending">Pending Deposit</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ referral.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if referral.first_qualified_deposit_at %}
+                                {{ referral.first_qualified_deposit_at.strftime('%Y-%m-%d') }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            No referrals yet. Share your referral link to start earning investment credit.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="content-card mt-4">
+                <span class="badge-premium mb-3">
+                    <i class="bi bi-info-circle"></i>
+                    Referral Reward Rules
+                </span>
+                <ul class="premium-list mb-0">
+                    <li>Each referred user counts only once.</li>
+                    <li>A referral qualifies only after an approved deposit of at least $10.</li>
+                    <li>Every 10 qualified referrals earns $20 investment credit.</li>
+                    <li>Investment credit can be used to invest, but cannot be withdrawn.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let referralTrendChart = null;
+let referralBreakdownChart = null;
+
+const copyBtn = document.getElementById("copyReferralBtn");
+const referralInput = document.getElementById("referralLinkInput");
+
+if (copyBtn && referralInput) {
+    copyBtn.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(referralInput.value);
+            copyBtn.innerHTML = '<i class="bi bi-check2"></i> Copied';
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="bi bi-copy"></i> Copy';
+            }, 1800);
+        } catch (err) {
+            referralInput.select();
+            document.execCommand("copy");
+            copyBtn.innerHTML = '<i class="bi bi-check2"></i> Copied';
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="bi bi-copy"></i> Copy';
+            }, 1800);
+        }
+    });
+}
+
+async function loadReferralCharts() {
+    try {
+        const response = await fetch("{{ url_for('dashboard.referrals_data') }}", { cache: "no-store" });
+        const data = await response.json();
+
+        const trendCtx = document.getElementById("referralTrendChart");
+        if (referralTrendChart) {
+            referralTrendChart.data.labels = data.labels;
+            referralTrendChart.data.datasets[0].data = data.signups;
+            referralTrendChart.data.datasets[1].data = data.qualified;
+            referralTrendChart.update();
+        } else {
+            referralTrendChart = new Chart(trendCtx, {
+                type: "line",
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: "Total Referrals",
+                            data: data.signups,
+                            borderColor: "#29d3ff",
+                            backgroundColor: "rgba(41,211,255,0.08)",
+                            fill: false,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointRadius: 3
+                        },
+                        {
+                            label: "Qualified Referrals",
+                            data: data.qualified,
+                            borderColor: "#18d39e",
+                            backgroundColor: "rgba(24,211,158,0.12)",
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: "#90a4c4" }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: "#90a4c4" }
+                        },
+                        y: {
+                            grid: { color: "rgba(255,255,255,0.05)" },
+                            ticks: { color: "#90a4c4", stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        const breakdownCtx = document.getElementById("referralBreakdownChart");
+        if (referralBreakdownChart) {
+            referralBreakdownChart.data.labels = data.breakdown_labels;
+            referralBreakdownChart.data.datasets[0].data = data.breakdown_values;
+            referralBreakdownChart.update();
+        } else {
+            referralBreakdownChart = new Chart(breakdownCtx, {
+                type: "doughnut",
+                data: {
+                    labels: data.breakdown_labels,
+                    datasets: [{
+                        data: data.breakdown_values,
+                        backgroundColor: ["#29d3ff", "#18d39e"],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: "#90a4c4" }
+                        }
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        console.error("Failed to load referral chart data:", error);
+    }
+}
+
+loadReferralCharts();
+setInterval(loadReferralCharts, 15000);
+</script>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Investment Plans{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h1>Investment Plans</h1>
+        <p class="muted">Illustrative plan data only. Do not market projected returns as guaranteed.</p>
+
+        <div class="cards">
+            {% for plan in plans %}
+            <div class="card">
+                <h3>{{ plan.name }}</h3>
+                <p>{{ plan.description }}</p>
+                <ul class="list-clean">
+                    <li>Minimum: ${{ '%.2f'|format(plan.min_amount) }}</li>
+                    <li>Duration: {{ plan.duration_days }} days</li>
+                    <li>Projected return: {{ plan.target_return_percent }}%</li>
+                    <li>Risk level: {{ plan.risk_level }}</li>
+                    <li>Status: {{ 'Active' if plan.is_active else 'Inactive' }}</li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="card"><p>No plans yet.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

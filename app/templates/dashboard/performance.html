@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %}Performance{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Performance Analytics</h1>
+                <p class="text-muted-premium mb-0">
+                    Real investment-based analytics with automatic refresh.
+                </p>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-bar-chart-line"></i></div>
+                        <p class="metric-label">Total Invested</p>
+                        <p class="metric-value" id="metricTotalInvested">
+                            ${{ '%.2f'|format(total_invested) }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                        <p class="metric-label">Projected Value</p>
+                        <p class="metric-value" id="metricProjectedValue">
+                            ${{ '%.2f'|format(projected_value) }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-cash-stack"></i></div>
+                        <p class="metric-label">Projected Profit</p>
+                        <p class="metric-value" id="metricProjectedProfit">
+                            ${{ '%.2f'|format(projected_profit) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="content-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted-premium d-block">Trend</small>
+                                <h5 class="mb-0">Cumulative Investment Growth</h5>
+                            </div>
+                            <span class="pill-link"><i class="bi bi-activity"></i> Auto Refresh</span>
+                        </div>
+
+                        <div class="chart-wrap">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="content-card h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted-premium d-block">Allocation</small>
+                                <h5 class="mb-0">By Investment Plan</h5>
+                            </div>
+                        </div>
+
+                        <div class="chart-wrap" style="height: 260px;">
+                            <canvas id="allocationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-panel">
+                <div class="mb-3">
+                    <small class="text-muted-premium d-block">Detailed View</small>
+                    <h5 class="mb-0">Investment Table</h5>
+                </div>
+
+                <table class="table-premium">
+                    <tr>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Projected Value</th>
+                        <th>Projected Profit</th>
+                        <th>Status</th>
+                        <th>Maturity</th>
+                    </tr>
+                    {% for inv in investments %}
+                    <tr>
+                        <td>{{ inv.plan.name }}</td>
+                        <td>${{ '%.2f'|format(inv.amount) }}</td>
+                        <td>${{ '%.2f'|format(inv.projected_return_amount) }}</td>
+                        <td>${{ '%.2f'|format(inv.projected_return_amount - inv.amount) }}</td>
+                        <td>
+                            <span class="status-badge status-{{ inv.status }}">
+                                {{ inv.status|title }}
+                            </span>
+                        </td>
+                        <td>{{ inv.maturity_date.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">No investments yet.</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let performanceChartInstance = null;
+let allocationChartInstance = null;
+
+function money(value) {
+    return '$' + Number(value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+async function loadPerformanceData() {
+    try {
+        const response = await fetch("{{ url_for('dashboard.performance_data') }}", {
+            cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        // Update metrics
+        document.getElementById("metricTotalInvested").textContent = money(data.summary.total_invested);
+        document.getElementById("metricProjectedValue").textContent = money(data.summary.projected_value);
+        document.getElementById("metricProjectedProfit").textContent = money(data.summary.projected_profit);
+
+        // Update trend chart
+        const perfCtx = document.getElementById("performanceChart");
+        if (performanceChartInstance) {
+            performanceChartInstance.data.labels = data.trend.labels;
+            performanceChartInstance.data.datasets[0].data = data.trend.invested;
+            performanceChartInstance.data.datasets[1].data = data.trend.projected;
+            performanceChartInstance.update();
+        } else {
+            performanceChartInstance = new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: data.trend.labels,
+                    datasets: [
+                        {
+                            label: 'Total Invested',
+                            data: data.trend.invested,
+                            borderColor: '#29d3ff',
+                            backgroundColor: 'rgba(41,211,255,0.08)',
+                            fill: false,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointRadius: 3
+                        },
+                        {
+                            label: 'Projected Value',
+                            data: data.trend.projected,
+                            borderColor: '#18d39e',
+                            backgroundColor: 'rgba(24,211,158,0.10)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointRadius: 3
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#90a4c4'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#90a4c4' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#90a4c4' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update allocation chart
+        const allocCtx = document.getElementById("allocationChart");
+        if (allocationChartInstance) {
+            allocationChartInstance.data.labels = data.allocation.labels;
+            allocationChartInstance.data.datasets[0].data = data.allocation.values;
+            allocationChartInstance.data.datasets[0].backgroundColor = data.allocation.colors;
+            allocationChartInstance.update();
+        } else {
+            allocationChartInstance = new Chart(allocCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.allocation.labels,
+                    datasets: [{
+                        data: data.allocation.values,
+                        backgroundColor: data.allocation.colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#90a4c4'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    } catch (error) {
+        console.error("Failed to load performance data:", error);
+    }
+}
+
+loadPerformanceData();
+setInterval(loadPerformanceData, 15000);
+</script>
+{% endblock %}

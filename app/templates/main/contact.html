@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7" data-aos="fade-up">
+                <span class="badge-premium mb-3">
+                    <i class="bi bi-headset"></i>
+                    Contact & Support
+                </span>
+
+                <h1 class="hero-title">
+                    We’re here to help with <span class="gradient-text">support, onboarding, and platform questions</span>.
+                </h1>
+
+                <p class="hero-text">
+                    Reach out for account assistance, withdrawal help, onboarding questions,
+                    security concerns, or general inquiries about the platform.
+                </p>
+            </div>
+
+            <div class="col-lg-5" data-aos="zoom-in">
+                <div class="content-card">
+                    <small class="text-muted-premium d-block mb-2">Support Availability</small>
+                    <h5 class="mb-4">Contact Channels</h5>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-envelope"></i></div>
+                        <div>
+                            <strong>Email Support</strong>
+                            <div class="text-muted-premium small">support@cryptovest.com</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-chat-dots"></i></div>
+                        <div>
+                            <strong>Live Assistance</strong>
+                            <div class="text-muted-premium small">Response during business hours</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-shield-lock"></i></div>
+                        <div>
+                            <strong>Security Concerns</strong>
+                            <div class="text-muted-premium small">Priority handling recommended</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-7" data-aos="fade-up">
+                <div class="content-card h-100">
+                    <span class="badge-premium mb-3">
+                        <i class="bi bi-send"></i>
+                        Send a Message
+                    </span>
+
+                    <h2 class="section-title mb-3">Get in touch</h2>
+                    <!-- <p class="text-muted-premium mb-4">
+                        This contact form can be wired to email delivery, ticket creation,
+                        or CRM storage on the backend.
+                    </p> -->
+
+                    <form>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" placeholder="Your full name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" placeholder="name@example.com">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Subject</label>
+                                <input type="text" class="form-control" placeholder="What do you need help with?">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Message</label>
+                                <textarea class="form-control" rows="6" placeholder="Write your message here"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="button" class="btn btn-premium">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-5" data-aos="fade-up" data-aos-delay="120">
+                <div class="card-premium mb-4">
+                    <div class="feature-icon"><i class="bi bi-envelope-paper"></i></div>
+                    <h4>Email</h4>
+                    <p class="text-muted-premium mb-0">support@cryptovest.com</p>
+                </div>
+
+                <!-- <div class="card-premium mb-4">
+                    <div class="feature-icon"><i class="bi bi-geo-alt"></i></div>
+                    <h4>Office</h4>
+                    <p class="text-muted-premium mb-0">Your registered business address goes here</p>
+                </div> -->
+
+                <div class="card-premium">
+                    <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+                    <h4>Support Hours</h4>
+                    <p class="text-muted-premium mb-0">
+                        Monday – Friday<br>
+                        9:00 AM – 6:00 PM
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section pt-0">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-person-badge"></i></div>
+                    <h4>Account Help</h4>
+                    <p class="text-muted-premium">
+                        Help with registration, login, email verification, and profile access.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-wallet2"></i></div>
+                    <h4>Deposits & Withdrawals</h4>
+                    <p class="text-muted-premium">
+                        Assistance with funding, payment instructions, payout methods, and withdrawal confirmation.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="180">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-shield-exclamation"></i></div>
+                    <h4>Security Issues</h4>
+                    <p class="text-muted-premium">
+                        Report suspicious account activity or request urgent account protection support.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

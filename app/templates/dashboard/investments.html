@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Investments{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Investments</h1>
+                <p class="text-muted-premium mb-0">Launch investments from premium plan cards and review current positions below.</p>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-wallet2"></i></div>
+                        <p class="metric-label">Cash Balance</p>
+                        <p class="metric-value">${{ '%.2f'|format(current_user.usd_balance) }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-gift"></i></div>
+                        <p class="metric-label">Investment Credit</p>
+                        <p class="metric-value">${{ '%.2f'|format(current_user.investment_credit_balance or 0) }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="bi bi-cash-stack"></i></div>
+                        <p class="metric-label">Total Investable</p>
+                        <p class="metric-value">${{ '%.2f'|format(investable_total) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                {% for plan in plans %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card-premium h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h4 class="mb-0">{{ plan.name }}</h4>
+                            <span class="status-badge status-info">{{ plan.risk_level }}</span>
+                        </div>
+
+                        <p class="text-muted-premium">{{ plan.description }}</p>
+
+                        <div class="mb-3">
+                            <small class="text-muted-premium d-block">Minimum</small>
+                            <strong>${{ '%.2f'|format(plan.min_amount) }}</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted-premium d-block">Duration</small>
+                            <strong>{{ plan.duration_days }} days</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted-premium d-block">Projected Return</small>
+                            <strong>{{ plan.target_return_percent }}%</strong>
+                        </div>
+
+                        <form method="POST" class="mt-4">
+                            {{ form.hidden_tag() }}
+                            <input type="hidden" name="plan_id" value="{{ plan.id }}">
+                            <div class="mb-3">
+                                <label class="form-label">{{ form.amount.label.text }}</label>
+                                {{ form.amount(class_='form-control', placeholder='Investment amount') }}
+                            </div>
+                            {{ form.submit(class_='btn btn-premium') }}
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <div class="content-card empty-state">No active plans.</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="table-panel">
+                <div class="mb-3">
+                    <small class="text-muted-premium d-block">Portfolio</small>
+                    <h5 class="mb-0">My Investments</h5>
+                </div>
+
+                <table class="table-premium">
+                    <tr>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Projected Value</th>
+                        <th>Status</th>
+                        <th>Maturity</th>
+                        <th></th>
+                    </tr>
+                    {% for inv in my_investments %}
+                    <tr>
+                        <td>{{ inv.plan.name }}</td>
+                        <td>${{ '%.2f'|format(inv.amount) }}</td>
+                        <td>${{ '%.2f'|format(inv.projected_return_amount) }}</td>
+                        <td><span class="status-badge status-{{ inv.status }}">{{ inv.status|title }}</span></td>
+                        <td>{{ inv.maturity_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a class="pill-link" href="{{ url_for('dashboard.investment_detail', investment_id=inv.id) }}">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="empty-state">No investments yet.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Payout Methods{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Payout Methods</h1>
+                <p class="text-muted-premium mb-0">
+                    Add and manage wallet addresses used for withdrawals.
+                </p>
+            </div>
+
+            <div class="content-card mb-4">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.label.label.text }}</label>
+                            {{ form.label(class_='form-control', placeholder='e.g. Main USDT Wallet') }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.asset.label.text }}</label>
+                            {{ form.asset(class_='form-select') }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.network.label.text }}</label>
+                            {{ form.network(class_='form-select') }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.wallet_address.label.text }}</label>
+                            {{ form.wallet_address(class_='form-control', placeholder='Enter wallet address') }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        {{ form.submit(class_='btn btn-premium') }}
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-panel">
+                <table class="table-premium">
+                    <tr>
+                        <th>Label</th>
+                        <th>Asset</th>
+                        <th>Network</th>
+                        <th>Wallet Address</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for method in methods %}
+                    <tr>
+                        <td>{{ method.label }}</td>
+                        <td>{{ method.asset }}</td>
+                        <td>{{ method.network }}</td>
+                        <td style="word-break: break-all;">{{ method.wallet_address }}</td>
+                        <td>
+                            <a class="pill-link" href="{{ url_for('dashboard.delete_payout_method', method_id=method.id) }}">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">No payout wallets added yet.</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

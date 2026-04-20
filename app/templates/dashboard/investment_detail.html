@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Investment Detail{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>{{ investment.plan.name }}</h1>
+                <p class="text-muted-premium mb-0">Detailed breakdown of the selected investment plan and allocation.</p>
+            </div>
+
+            <div class="content-card">
+                <p class="text-muted-premium">{{ investment.plan.description }}</p>
+                <hr class="premium-divider">
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <p class="metric-label">Amount</p>
+                            <p class="metric-value">${{ '%.2f'|format(investment.amount) }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <p class="metric-label">Projected Value</p>
+                            <p class="metric-value">${{ '%.2f'|format(investment.projected_return_amount) }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <p class="metric-label">Status</p>
+                            <p class="metric-value">{{ investment.status|title }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1">
+                    <div class="col-md-6">
+                        <div class="card-premium">
+                            <small class="text-muted-premium d-block">Risk Level</small>
+                            <h5 class="mb-0">{{ investment.plan.risk_level }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-premium">
+                            <small class="text-muted-premium d-block">Maturity Date</small>
+                            <h5 class="mb-0">{{ investment.maturity_date.strftime('%Y-%m-%d') }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

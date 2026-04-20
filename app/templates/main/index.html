@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block title %}CryptoVest - Premium Crypto Investment Platform{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7" data-aos="fade-up">
+                <span class="badge-premium mb-3">
+                    <i class="bi bi-shield-check"></i>
+                    Premium fintech experience
+                </span>
+
+                <h1 class="hero-title">
+                    Modern <span class="gradient-text">crypto investing</span> with a secure, elegant user experience.
+                </h1>
+
+                <p class="hero-text">
+                    Manage balances, monitor investment performance, track transactions in real time,
+                    and control operations from a beautifully designed Flask-powered platform.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-premium">Get Started</a>
+                    <a href="{{ url_for('main.plans') }}" class="btn btn-outline-premium">Explore Plans</a>
+                </div>
+
+                <p class="text-muted-premium mt-4 mb-0">
+                    ⚠️ Crypto assets are volatile. Returns are not guaranteed.
+                </p>
+            </div>
+
+            <div class="col-lg-5" data-aos="zoom-in">
+                <div class="glass-panel">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-clock"></i></div>
+                                <p class="metric-label">Access</p>
+                                <p class="metric-value">24/7</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-shield-lock"></i></div>
+                                <p class="metric-label">Admin Control</p>
+                                <p class="metric-value">RBAC</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-box"></i></div>
+                                <p class="metric-label">Backend</p>
+                                <p class="metric-value">Flask</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-database"></i></div>
+                                <p class="metric-label">Database</p>
+                                <p class="metric-value">Postgres</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted-premium">Performance Preview</small>
+                                <h5 class="mb-0">Portfolio Growth</h5>
+                            </div>
+                            <span class="pill-link"><i class="bi bi-graph-up"></i> Live UI</span>
+                        </div>
+                        <div class="chart-wrap">
+                            <canvas id="heroChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="mb-5">
+            <h2 class="section-title" data-aos="fade-up">Why users trust CryptoVest</h2>
+            <p class="section-subtitle text-muted-premium" data-aos="fade-up">
+                Clear account controls, transparent plan presentation, clean dashboards, and secure admin oversight.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-bar-chart-line"></i></div>
+                    <h4>Performance Tracking</h4>
+                    <p class="text-muted-premium">View balances, investment progress, and transaction activity in one place.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="120">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-wallet2"></i></div>
+                    <h4>Wallet Management</h4>
+                    <p class="text-muted-premium">Manage deposits, withdrawals, balances, and request flows with clarity.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="220">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+                    <h4>Security Controls</h4>
+                    <p class="text-muted-premium">Role-based admin actions, secure forms, and a modern compliance-ready structure.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="mb-4">
+            <h2 class="section-title">Featured Plans</h2>
+            <p class="text-muted-premium">Transparent plan summaries with clean, premium presentation.</p>
+        </div>
+
+        <div class="row g-4">
+            {% for plan in plans %}
+            <div class="col-md-4">
+                <div class="card-premium h-100">
+                    <span class="badge-premium mb-3">
+                        <i class="bi bi-lightning-charge"></i>
+                        {{ plan.risk_level }} Risk
+                    </span>
+                    <h4>{{ plan.name }}</h4>
+                    <p class="text-muted-premium">{{ plan.description }}</p>
+                    <hr class="premium-divider">
+                    <ul class="premium-list">
+                        <li>Minimum: ${{ '%.2f'|format(plan.min_amount) }}</li>
+                        <li>Duration: {{ plan.duration_days }} days</li>
+                        <li>Projected return: {{ plan.target_return_percent }}%</li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="content-card empty-state">
+                    No plans available yet.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const heroCanvas = document.getElementById('heroChart');
+if (heroCanvas) {
+    new Chart(heroCanvas, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                data: [1200, 1380, 1600, 1540, 2050, 2440],
+                borderColor: '#3d8bff',
+                backgroundColor: 'rgba(61,139,255,0.14)',
+                fill: true,
+                tension: 0.42,
+                pointRadius: 0,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { display: false }, y: { display: false } }
+        }
+    });
+}
+</script>
+{% endblock %}

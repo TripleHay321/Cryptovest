@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/dashboard_sidebar.html' %}
+
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Notifications</h1>
+                <p class="text-muted-premium mb-0">
+                    Stay informed about deposits, withdrawals, investment activity, and support updates.
+                </p>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-lg-7">
+                    <div class="content-card h-100">
+                        <small class="text-muted-premium d-block mb-2">Transaction Activity</small>
+                        <h5 class="mb-3">Recent Financial Notifications</h5>
+
+                        <div class="d-grid gap-3">
+                            {% for tx in transactions %}
+                            <div class="card-premium">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                    <div>
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            {% if tx.tx_type == 'deposit' %}
+                                                <div class="feature-icon mb-0"><i class="bi bi-arrow-down-circle"></i></div>
+                                            {% elif tx.tx_type == 'withdrawal' %}
+                                                <div class="feature-icon mb-0"><i class="bi bi-arrow-up-circle"></i></div>
+                                            {% else %}
+                                                <div class="feature-icon mb-0"><i class="bi bi-bar-chart-line"></i></div>
+                                            {% endif %}
+                                            <div>
+                                                <strong>{{ tx.tx_type|title }} Update</strong>
+                                                <div class="text-muted-premium small">{{ tx.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                                            </div>
+                                        </div>
+
+                                        <p class="text-muted-premium mb-2">
+                                            Amount: <strong>${{ '%.2f'|format(tx.amount) }}</strong> • Asset: <strong>{{ tx.asset }}</strong>
+                                        </p>
+
+                                        {% if tx.notes %}
+                                        <p class="text-muted-premium mb-0">{{ tx.notes }}</p>
+                                        {% endif %}
+                                    </div>
+
+                                    <span class="status-badge status-{{ tx.status }}">
+                                        {{ tx.status|title }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="content-card empty-state">No transaction notifications yet.</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="content-card h-100">
+                        <small class="text-muted-premium d-block mb-2">Support Updates</small>
+                        <h5 class="mb-3">Recent Ticket Activity</h5>
+
+                        <div class="d-grid gap-3">
+                            {% for ticket in tickets %}
+                            <div class="card-premium">
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                    <strong>{{ ticket.subject }}</strong>
+                                    <span class="status-badge status-{{ ticket.status }}">
+                                        {{ ticket.status|title }}
+                                    </span>
+                                </div>
+
+                                <p class="text-muted-premium mb-2">
+                                    {{ ticket.message[:120] }}{% if ticket.message|length > 120 %}...{% endif %}
+                                </p>
+
+                                {% if ticket.admin_reply %}
+                                <div class="mt-2">
+                                    <small class="text-muted-premium d-block mb-1">Admin Reply</small>
+                                    <p class="mb-0">{{ ticket.admin_reply[:100] }}{% if ticket.admin_reply|length > 100 %}...{% endif %}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            <div class="content-card empty-state">No support notifications yet.</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <small class="text-muted-premium d-block">Notification Categories</small>
+                        <h5 class="mb-0">What you’ll see here</h5>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="card-premium h-100">
+                            <div class="feature-icon"><i class="bi bi-wallet2"></i></div>
+                            <h6>Deposits</h6>
+                            <p class="text-muted-premium mb-0">Funding updates and confirmations.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-premium h-100">
+                            <div class="feature-icon"><i class="bi bi-cash-stack"></i></div>
+                            <h6>Withdrawals</h6>
+                            <p class="text-muted-premium mb-0">Submission, approval, and payout progress.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-premium h-100">
+                            <div class="feature-icon"><i class="bi bi-bar-chart"></i></div>
+                            <h6>Investments</h6>
+                            <p class="text-muted-premium mb-0">Plan creation and activity updates.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="card-premium h-100">
+                            <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+                            <h6>Security</h6>
+                            <p class="text-muted-premium mb-0">Verification and account protection alerts.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

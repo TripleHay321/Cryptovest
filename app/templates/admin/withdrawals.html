@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Admin Withdrawals{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container dashboard-layout">
+        {% include 'includes/admin_sidebar.html' %}
+        <div class="page-shell">
+            <div class="page-header">
+                <h1>Withdrawals</h1>
+                <p class="text-muted-premium mb-0">Review payout requests and approve or reject them.</p>
+            </div>
+
+            <div class="table-panel">
+                <table class="table-premium">
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Wallet</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for tx in withdrawals %}
+                    <tr>
+                        <td>{{ tx.id }}</td>
+                        <td>{{ tx.user.email }}</td>
+                        <td>${{ '%.2f'|format(tx.amount) }}</td>
+                        <td>{{ tx.wallet_address or '-' }}</td>
+                        <td><span class="status-badge status-{{ tx.status }}">{{ tx.status|title }}</span></td>
+                        <td>
+                            {% if tx.status == 'pending' %}
+                                <a class="pill-link me-2" href="{{ url_for('admin.approve_transaction', tx_id=tx.id) }}">Approve</a>
+                                <a class="pill-link" href="{{ url_for('admin.reject_transaction', tx_id=tx.id) }}">Reject</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="empty-state">No withdrawals found.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block title %}Security{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7" data-aos="fade-up">
+                <span class="badge-premium mb-3">
+                    <i class="bi bi-shield-lock"></i>
+                    Security & Protection
+                </span>
+
+                <h1 class="hero-title">
+                    Built with a <span class="gradient-text">security-first mindset</span> for modern financial platforms.
+                </h1>
+
+                <p class="hero-text">
+                    CryptoVest is designed to support strong authentication, protected workflows,
+                    secure transaction handling, and administrative oversight to help safeguard user accounts and platform operations.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-premium">Create Secure Account</a>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-premium">Contact Support</a>
+                </div>
+            </div>
+
+            <div class="col-lg-5" data-aos="zoom-in">
+                <div class="glass-panel">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-envelope-check"></i></div>
+                                <p class="metric-label">Email Verification</p>
+                                <p class="metric-value">Enabled</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-key"></i></div>
+                                <p class="metric-label">Password Security</p>
+                                <p class="metric-value">Hashed</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-arrow-left-right"></i></div>
+                                <p class="metric-label">Withdrawals</p>
+                                <p class="metric-value">Verified</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="metric-card">
+                                <div class="metric-icon"><i class="bi bi-person-lock"></i></div>
+                                <p class="metric-label">Admin Access</p>
+                                <p class="metric-value">Restricted</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="mb-5">
+            <h2 class="section-title" data-aos="fade-up">Core security features</h2>
+            <p class="text-muted-premium" data-aos="fade-up">
+                The platform is structured around layered protections for user accounts, financial actions, and administrative operations.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-envelope-at"></i></div>
+                    <h4>Email Authentication</h4>
+                    <p class="text-muted-premium">
+                        New accounts can require email verification before login or sensitive actions are allowed.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="80">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-lock"></i></div>
+                    <h4>Password Protection</h4>
+                    <p class="text-muted-premium">
+                        Passwords should never be stored in plain text and are protected using secure hashing algorithms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="140">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+                    <h4>CSRF & Form Validation</h4>
+                    <p class="text-muted-premium">
+                        Server-side validation and CSRF protection help defend against malicious form submissions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="180">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-cash-coin"></i></div>
+                    <h4>Withdrawal Verification</h4>
+                    <p class="text-muted-premium">
+                        Withdrawal requests can require email confirmation codes before submission is finalized.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="240">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-diagram-3"></i></div>
+                    <h4>Role-Based Access</h4>
+                    <p class="text-muted-premium">
+                        Administrative tools should only be available to authorized staff with restricted permissions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+                    <h4>Audit Visibility</h4>
+                    <p class="text-muted-premium">
+                        Important financial and admin actions should be tracked for accountability and review.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section pt-0">
+    <div class="container">
+        <div class="content-card" data-aos="fade-up">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <h3 class="mb-3">Recommended protections</h3>
+                    <ul class="premium-list">
+                        <li>Email verification for new accounts</li>
+                        <li>Withdrawal confirmation codes</li>
+                        <li>Two-factor authentication for users and admins</li>
+                        <li>Wallet whitelisting for payouts</li>
+                        <li>Secure session and cookie handling</li>
+                        <li>Rate limiting on login and verification routes</li>
+                        <li>Admin activity logging</li>
+                        <li>Strict server-side validation for all financial actions</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-6">
+                    <h3 class="mb-3">Operational mindset</h3>
+                    <p class="text-muted-premium">
+                        Security is not a single feature — it is a continuous process involving secure development,
+                        authentication controls, monitoring, operational review, and clear incident response procedures.
+                    </p>
+                    <p class="text-muted-premium mb-0">
+                        For production deployment, financial platforms should also add infrastructure hardening,
+                        secrets management, transaction monitoring, KYC/AML controls, and real audit trails.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section pt-0">
+    <div class="container">
+        <div class="content-card text-center" data-aos="fade-up">
+            <span class="badge-premium mb-3">
+                <i class="bi bi-life-preserver"></i>
+                Need Help?
+            </span>
+            <h2 class="section-title">If you notice suspicious activity, contact support immediately</h2>
+            <p class="text-muted-premium mb-4">
+                Reach out for account lock requests, login problems, email verification issues, or withdrawal-related concerns.
+            </p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="{{ url_for('main.contact') }}" class="btn btn-premium">Contact Support</a>
+                <a href="{{ url_for('main.faq') }}" class="btn btn-outline-premium">Read FAQ</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

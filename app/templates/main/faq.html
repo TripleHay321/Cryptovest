@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% block title %}FAQ{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7" data-aos="fade-up">
+                <span class="badge-premium mb-3">
+                    <i class="bi bi-question-circle"></i>
+                    Frequently Asked Questions
+                </span>
+
+                <h1 class="hero-title">
+                    Clear answers for <span class="gradient-text">accounts, deposits, withdrawals, and security</span>.
+                </h1>
+
+                <p class="hero-text">
+                    Find quick answers to common questions about account access, funding, payout methods,
+                    investment visibility, verification, and support.
+                </p>
+            </div>
+
+            <div class="col-lg-5" data-aos="zoom-in">
+                <div class="content-card">
+                    <small class="text-muted-premium d-block mb-2">Quick Help</small>
+                    <h5 class="mb-4">Popular Topics</h5>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-person-plus"></i></div>
+                        <div>
+                            <strong>Account Setup</strong>
+                            <div class="text-muted-premium small">Registration and email verification</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-wallet2"></i></div>
+                        <div>
+                            <strong>Deposits</strong>
+                            <div class="text-muted-premium small">Funding and payment instructions</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-arrow-up-circle"></i></div>
+                        <div>
+                            <strong>Withdrawals</strong>
+                            <div class="text-muted-premium small">Payout wallets and confirmation</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="feature-icon mb-0"><i class="bi bi-shield-lock"></i></div>
+                        <div>
+                            <strong>Security</strong>
+                            <div class="text-muted-premium small">Verification and account protection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section">
+    <div class="container">
+        <div class="mb-4" data-aos="fade-up">
+            <h2 class="section-title">Common questions</h2>
+            <p class="text-muted-premium">
+                Here are the most common questions users may have when using the platform.
+            </p>
+        </div>
+
+        <div class="content-card" data-aos="fade-up">
+            <div class="accordion accordion-flush" id="faqAccordion">
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            How do I create an account?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            Click the <strong>Get Started</strong> button, fill in your registration details,
+                            and confirm your email address using the verification link sent to your inbox.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Why do I need to verify my email?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            Email verification helps confirm account ownership and protects access to important actions such as login recovery and withdrawal confirmation.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            How do deposits work?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            Users select an asset, network, and amount, then proceed to the payment or deposit instruction screen where the wallet destination and funding details are shown.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            How do withdrawals work?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            Users first add a payout wallet, then request a withdrawal to that saved wallet.
+                            The platform can require email confirmation before the withdrawal request is finalized.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            Can I save more than one payout wallet?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            Yes. Users can store multiple payout methods depending on how the platform is configured, including asset and network-specific wallet addresses.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                            Are returns guaranteed?
+                        </button>
+                    </h2>
+                    <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            No. Crypto-related activity involves risk, volatility, and possible loss of capital.
+                            Any projected return should be treated as an estimate, not a guarantee.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                            What should I do if I entered the wrong wallet network?
+                        </button>
+                    </h2>
+                    <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            Always double-check asset and network selection before sending funds.
+                            Sending the wrong asset or using the wrong network may result in permanent loss.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0 border-bottom" style="border-color: var(--border) !important;">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+                            How do I get support?
+                        </button>
+                    </h2>
+                    <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            You can use the public contact page for general inquiries or the in-dashboard support ticket system after logging in.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-0">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed shadow-none bg-transparent text-reset" type="button" data-bs-toggle="collapse" data-bs-target="#faq9">
+                            What security features should I expect?
+                        </button>
+                    </h2>
+                    <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted-premium">
+                            A secure platform should include password hashing, email verification, withdrawal confirmation, role-based admin access, CSRF protection, and strong server-side validation.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section pt-0">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-person-check"></i></div>
+                    <h4>Account Questions</h4>
+                    <p class="text-muted-premium">
+                        Registration, login, verification, password issues, and account access help.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-cash-stack"></i></div>
+                    <h4>Transaction Questions</h4>
+                    <p class="text-muted-premium">
+                        Deposits, payout setup, withdrawal requests, confirmation steps, and status updates.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="180">
+                <div class="card-premium h-100">
+                    <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+                    <h4>Security Questions</h4>
+                    <p class="text-muted-premium">
+                        Email protection, account safety, suspicious activity, and platform safeguards.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="page-section pt-0">
+    <div class="container">
+        <div class="content-card text-center" data-aos="fade-up">
+            <span class="badge-premium mb-3">
+                <i class="bi bi-headset"></i>
+                Still Need Help?
+            </span>
+            <h2 class="section-title">Contact support for anything not covered here</h2>
+            <p class="text-muted-premium mb-4">
+                If your question is not answered in the FAQ, reach out and the support team can help you directly.
+            </p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="{{ url_for('main.contact') }}" class="btn btn-premium">Contact Us</a>
+                <a href="{{ url_for('main.security') }}" class="btn btn-outline-premium">Security Page</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — NexVault</title>
+  <link rel="stylesheet" href="../static/css/main.css">
+  <style>
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--c-bg); padding: 2rem 0; }
+    .auth-bg { position: fixed; inset: 0; pointer-events: none; background: var(--grad-hero); }
+    .auth-grid {
+      position: fixed; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+    }
+    .auth-wrap { width: 100%; max-width: 540px; padding: var(--space-xl); position: relative; z-index: 1; }
+    .auth-card { background: var(--c-bg-2); border: 1px solid var(--c-border-2); border-radius: var(--r-xl); padding: var(--space-2xl); box-shadow: 0 24px 64px rgba(0,0,0,0.4); }
+    .auth-header { text-align: center; margin-bottom: var(--space-2xl); }
+    .auth-logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; margin-bottom: var(--space-xl); }
+    .auth-logo .logo-icon { width: 36px; height: 36px; font-size: 1rem; }
+    .auth-header h1 { font-size: 1.6rem; font-family: var(--font-display); font-weight: 700; margin-bottom: .4rem; }
+    .auth-header p { color: var(--c-text-2); font-size: .9rem; }
+    .input-wrap { position: relative; }
+    .input-icon { position: absolute; left: .875rem; top: 50%; transform: translateY(-50%); color: var(--c-text-3); font-size: .95rem; }
+    .input-wrap input { padding-left: 2.5rem; }
+    .input-wrap .input-suffix { position: absolute; right: .875rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--c-text-3); font-size: .85rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+    .strength-bar { display: flex; gap: 3px; margin-top: .375rem; }
+    .strength-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--c-surface-2); transition: background var(--t-base); }
+    .strength-label { font-size: .75rem; color: var(--c-text-3); margin-top: .25rem; }
+
+    .plan-select-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-top: .5rem; }
+    .plan-opt { border: 1px solid var(--c-border); border-radius: var(--r-md); padding: .875rem; cursor: pointer; transition: all var(--t-base); text-align: center; }
+    .plan-opt:hover { border-color: var(--c-gold); background: var(--c-gold-dim); }
+    .plan-opt.selected { border-color: var(--c-gold); background: var(--c-gold-dim); }
+    .plan-opt .plan-name { font-weight: 600; font-size: .85rem; margin-bottom: .25rem; }
+    .plan-opt .plan-min { font-size: .75rem; color: var(--c-text-3); }
+    .plan-opt .plan-rate { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--c-gold); }
+
+    .step-indicator { display: flex; align-items: center; gap: .5rem; margin-bottom: var(--space-2xl); }
+    .step-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; border: 2px solid var(--c-border); color: var(--c-text-3); transition: all var(--t-base); flex-shrink: 0; }
+    .step-dot.active { border-color: var(--c-gold); color: var(--c-gold); background: var(--c-gold-dim); }
+    .step-dot.done { border-color: var(--c-teal); background: var(--c-teal); color: #09090f; }
+    .step-line { flex: 1; height: 1px; background: var(--c-border); }
+    .step-line.done { background: var(--c-teal); }
+
+    .terms-check { display: flex; gap: .75rem; align-items: flex-start; font-size: .85rem; color: var(--c-text-2); cursor: pointer; }
+    .terms-check input { margin-top: 2px; width: 16px; height: 16px; accent-color: var(--c-gold); flex-shrink: 0; cursor: pointer; }
+
+    .auth-footer { text-align: center; margin-top: var(--space-xl); color: var(--c-text-2); font-size: .9rem; }
+    .auth-footer a { color: var(--c-gold); font-weight: 600; }
+
+    .benefits-row { display: flex; justify-content: center; gap: var(--space-xl); margin-bottom: var(--space-xl); flex-wrap: wrap; }
+    .benefit { display: flex; align-items: center; gap: .4rem; font-size: .8rem; color: var(--c-text-2); }
+    .benefit span:first-child { color: var(--c-teal); }
+
+    .section-step { display: none; }
+    .section-step.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="auth-bg"></div>
+  <div class="auth-grid"></div>
+
+  <a href="index.html" style="position:fixed;top:1.5rem;left:1.5rem;display:flex;align-items:center;gap:.5rem;color:var(--c-text-2);font-size:.875rem;z-index:10;">← NexVault</a>
+  <button class="theme-toggle" style="position:fixed;top:1.5rem;right:1.5rem;z-index:10;"><span class="theme-icon">☀️</span></button>
+
+  <div class="auth-wrap animate-fadeUp">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="index.html" class="auth-logo"><div class="logo-icon">N</div>NexVault</a>
+        <h1>Create your account</h1>
+        <p>Join 47,000+ investors growing their wealth</p>
+      </div>
+
+      <div class="benefits-row">
+        <div class="benefit"><span>✓</span> No setup fee</div>
+        <div class="benefit"><span>✓</span> Withdraw anytime</div>
+        <div class="benefit"><span>✓</span> Insured custody</div>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" id="step-indicator">
+        <div class="step-dot active" id="dot-1">1</div>
+        <div class="step-line" id="line-1"></div>
+        <div class="step-dot" id="dot-2">2</div>
+        <div class="step-line" id="line-2"></div>
+        <div class="step-dot" id="dot-3">3</div>
+      </div>
+
+      <form id="reg-form" novalidate>
+
+        <!-- STEP 1: Account -->
+        <div class="section-step active" id="step-1">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input type="text" id="first-name" placeholder="John" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <div class="input-wrap">
+                <span class="input-icon">👤</span>
+                <input type="text" id="last-name" placeholder="Smith" required>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉</span>
+              <input type="email" id="reg-email" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <div class="input-wrap">
+              <span class="input-icon">📱</span>
+              <input type="tel" id="phone" placeholder="+1 (555) 000-0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country of Residence</label>
+            <select id="country">
+              <option value="">Select your country…</option>
+              <option>United States</option><option>United Kingdom</option>
+              <option>Canada</option><option>Australia</option>
+              <option>Germany</option><option>France</option>
+              <option>Nigeria</option><option>Singapore</option>
+              <option>UAE</option><option>Other</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="nextStep(1)">
+            Continue →
+          </button>
+          <div class="auth-footer">Already have an account? <a href="login.html">Sign in</a></div>
+        </div>
+
+        <!-- STEP 2: Security -->
+        <div class="section-step" id="step-2">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="reg-password" placeholder="Create a strong password" oninput="checkStrength(this.value)" required>
+              <span class="input-suffix" onclick="togglePw('reg-password')">👁</span>
+            </div>
+            <div class="strength-bar">
+              <div class="strength-seg" id="s1"></div>
+              <div class="strength-seg" id="s2"></div>
+              <div class="strength-seg" id="s3"></div>
+              <div class="strength-seg" id="s4"></div>
+            </div>
+            <div class="strength-label" id="strength-label">Enter a password</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="confirm-pw" placeholder="Repeat your password" required>
+              <span class="input-suffix" onclick="togglePw('confirm-pw')">👁</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Referral Code <span style="color:var(--c-text-3);font-weight:400;">(optional)</span></label>
+            <div class="input-wrap">
+              <span class="input-icon">🎁</span>
+              <input type="text" id="referral" placeholder="e.g. NV-XXXX">
+            </div>
+            <div class="form-hint">Get a bonus on your first deposit with a valid referral code.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:var(--space-xl);">
+            <label class="terms-check">
+              <input type="checkbox" id="terms-check">
+              I agree to the <a href="legal.html" style="color:var(--c-gold);">Terms of Service</a> and have read the <a href="legal.html" style="color:var(--c-gold);">Risk Disclosure</a>.
+            </label>
+            <label class="terms-check">
+              <input type="checkbox" id="age-check">
+              I confirm I am at least 18 years old and the information provided is accurate.
+            </label>
+          </div>
+          <div style="display:flex;gap:.75rem;">
+            <button type="button" class="btn btn-outline" onclick="prevStep(2)" style="flex:0 0 auto;">← Back</button>
+            <button type="button" class="btn btn-primary" style="flex:1;justify-content:center;" onclick="nextStep(2)">
+              Create Account →
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Choose Plan (optional at signup) -->
+        <div class="section-step" id="step-3">
+          <div style="text-align:center;margin-bottom:var(--space-xl);">
+            <div style="font-size:2.5rem;margin-bottom:1rem;">🎉</div>
+            <h2 class="heading-2" style="margin-bottom:.5rem;">Account Created!</h2>
+            <p class="text-muted" style="font-size:.9rem;">Choose a plan to start investing, or explore your dashboard first.</p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select Investment Plan</label>
+            <div class="plan-select-row">
+              <div class="plan-opt" onclick="selectPlan(this,'starter')">
+                <div class="plan-name">Starter</div>
+                <div class="plan-rate">8.5%</div>
+                <div class="plan-min">From $500</div>
+              </div>
+              <div class="plan-opt selected" onclick="selectPlan(this,'growth')">
+                <div class="plan-name">Growth ⭐</div>
+                <div class="plan-rate">18%</div>
+                <div class="plan-min">From $5k</div>
+              </div>
+              <div class="plan-opt" onclick="selectPlan(this,'elite')">
+                <div class="plan-name">Elite</div>
+                <div class="plan-rate">32%</div>
+                <div class="plan-min">From $50k</div>
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-warning" style="margin-bottom:var(--space-lg);">
+            <span>⚠️</span>
+            <span>Returns are projections, not guarantees. Crypto investments carry risk of loss. Read our <a href="legal.html" style="color:var(--c-gold);">Risk Disclosure</a>.</span>
+          </div>
+          <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="goToDashboard()">
+            Go to Dashboard →
+          </button>
+          <button type="button" class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:.5rem;" onclick="goToDashboard()">
+            Skip for now
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+<script src="../static/js/main.js"></script>
+<script>
+  let currentStep = 1;
+
+  function nextStep(from) {
+    if (from === 1) {
+      const firstName = document.getElementById('first-name').value;
+      const email = document.getElementById('reg-email').value;
+      if (!firstName || !email) { Toast.show('Please fill in required fields', 'error'); return; }
+    }
+    if (from === 2) {
+      const pw = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('confirm-pw').value;
+      const terms = document.getElementById('terms-check').checked;
+      const age = document.getElementById('age-check').checked;
+      if (!pw || pw.length < 8) { Toast.show('Password must be at least 8 characters', 'error'); return; }
+      if (pw !== confirm) { Toast.show('Passwords do not match', 'error'); return; }
+      if (!terms || !age) { Toast.show('Please accept the terms and age confirmation', 'error'); return; }
+    }
+    document.getElementById(`step-${from}`).classList.remove('active');
+    document.getElementById(`step-${from + 1}`).classList.add('active');
+    document.getElementById(`dot-${from}`).classList.remove('active');
+    document.getElementById(`dot-${from}`).classList.add('done');
+    document.getElementById(`dot-${from}`).textContent = '✓';
+    if (document.getElementById(`line-${from}`)) document.getElementById(`line-${from}`).classList.add('done');
+    document.getElementById(`dot-${from + 1}`).classList.add('active');
+    currentStep = from + 1;
+  }
+
+  function prevStep(from) {
+    document.getElementById(`step-${from}`).classList.remove('active');
+    document.getElementById(`step-${from - 1}`).classList.add('active');
+    document.getElementById(`dot-${from}`).classList.remove('active');
+    document.getElementById(`dot-${from - 1}`).classList.remove('done');
+    document.getElementById(`dot-${from - 1}`).classList.add('active');
+    document.getElementById(`dot-${from - 1}`).textContent = from - 1;
+    if (document.getElementById(`line-${from - 1}`)) document.getElementById(`line-${from - 1}`).classList.remove('done');
+    currentStep = from - 1;
+  }
+
+  function checkStrength(pw) {
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+    const segs = ['s1','s2','s3','s4'];
+    const colors = ['var(--c-red)','var(--c-gold)','var(--c-gold)','var(--c-teal)'];
+    const labels = ['Too weak','Fair','Good','Strong'];
+    segs.forEach((id, i) => {
+      document.getElementById(id).style.background = i < score ? colors[score - 1] : 'var(--c-surface-2)';
+    });
+    document.getElementById('strength-label').textContent = score > 0 ? labels[score - 1] : 'Enter a password';
+    document.getElementById('strength-label').style.color = score > 0 ? colors[score - 1] : 'var(--c-text-3)';
+  }
+
+  function togglePw(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
+
+  function selectPlan(el, plan) {
+    document.querySelectorAll('.plan-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function goToDashboard() {
+    window.location.href = 'dashboard.html';
+  }
+</script>
+</body>
+</html>

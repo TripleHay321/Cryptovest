@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw — NexVault</title>
+  <link rel="stylesheet" href="../static/css/main.css">
+  <style>
+    .app-layout { display: flex; min-height: 100vh; }
+    .main-content { margin-left: 260px; flex: 1; background: var(--c-bg); }
+    .page-header { padding: 1.25rem 2rem; border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; background: var(--c-bg); position: sticky; top: 0; z-index: 50; }
+    .page-body { padding: 2rem; max-width: 780px; }
+    @media (max-width: 1024px) { .main-content { margin-left: 0; } }
+
+    .balance-banner {
+      background: linear-gradient(135deg, var(--c-surface) 0%, rgba(0,212,170,0.08) 100%);
+      border: 1px solid rgba(0,212,170,0.25);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .amount-input-wrap { position: relative; }
+    .amount-input-wrap span { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--c-text-2); font-size: 1.1rem; font-weight: 600; }
+    .amount-input-wrap input { padding-left: 2rem; font-size: 1.5rem; font-family: var(--font-display); font-weight: 700; height: 64px; }
+    .pct-btns { display: flex; gap: .5rem; margin-top: .625rem; flex-wrap: wrap; }
+    .pct-btn { padding: .35rem .75rem; border-radius: var(--r-pill); border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text-2); font-size: .8rem; font-weight: 600; cursor: pointer; transition: all var(--t-base); font-family: var(--font-body); }
+    .pct-btn:hover { border-color: var(--c-gold); color: var(--c-gold); }
+
+    .method-opt { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border: 1px solid var(--c-border); border-radius: var(--r-md); cursor: pointer; transition: all var(--t-base); margin-bottom: .75rem; background: var(--c-surface); }
+    .method-opt:hover { border-color: var(--c-border-2); }
+    .method-opt.selected { border-color: var(--c-gold); background: var(--c-gold-dim); }
+    .method-opt .left { display: flex; align-items: center; gap: .875rem; }
+    .method-icon { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .radio-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--c-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all var(--t-base); }
+    .method-opt.selected .radio-dot { border-color: var(--c-gold); background: var(--c-gold); }
+    .method-opt.selected .radio-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #09090f; }
+
+    .dest-panel { display: none; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--r-md); padding: 1.25rem; margin-top: .5rem; margin-bottom: 1.5rem; }
+    .dest-panel.active { display: block; }
+
+    .confirm-box { background: var(--c-surface); border: 1px solid var(--c-border-2); border-radius: var(--r-lg); padding: 1.25rem; margin-bottom: 1.5rem; }
+    .confirm-row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; font-size: .875rem; border-bottom: 1px solid var(--c-border); }
+    .confirm-row:last-child { border-bottom: none; font-weight: 700; font-size: 1rem; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><a href="index.html" class="logo"><div class="logo-icon">N</div>NexVault</a></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
+      <a href="portfolio.html" class="sidebar-link"><span class="icon">💼</span> Portfolio</a>
+      <a href="investments.html" class="sidebar-link"><span class="icon">📈</span> Investments</a>
+      <a href="deposit.html" class="sidebar-link"><span class="icon">⬇️</span> Deposit</a>
+      <a href="withdraw.html" class="sidebar-link active"><span class="icon">⬆️</span> Withdraw</a>
+      <a href="transactions.html" class="sidebar-link"><span class="icon">📋</span> Transactions</a>
+      <div class="sidebar-section-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><span class="icon">👤</span> Profile</a>
+      <a href="settings.html" class="sidebar-link"><span class="icon">⚙️</span> Settings</a>
+      <a href="support.html" class="sidebar-link"><span class="icon">💬</span> Support</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--grad-gold);display:flex;align-items:center;justify-content:center;font-weight:700;color:#09090f;font-size:.85rem;">MK</div>
+        <div><div style="font-size:.85rem;font-weight:600;">Marcus K.</div><div style="font-size:.75rem;color:var(--c-text-3);">Growth Plan</div></div>
+      </div>
+      <a href="login.html" class="btn btn-ghost" style="width:100%;justify-content:center;font-size:.85rem;">Sign Out</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;">Withdraw Funds</h1>
+        <div style="font-size:.8rem;color:var(--c-text-3);">Withdraw to your external wallet or bank account</div>
+      </div>
+      <button class="theme-toggle"><span class="theme-icon">☀️</span></button>
+    </div>
+
+    <div class="page-body">
+      <!-- Available balance -->
+      <div class="balance-banner">
+        <div>
+          <div style="font-size:.8rem;color:var(--c-text-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;">Available to Withdraw</div>
+          <div style="font-family:var(--font-display);font-size:2.2rem;font-weight:800;color:var(--c-teal);">$6,820.25</div>
+          <div style="font-size:.82rem;color:var(--c-text-3);margin-top:.25rem;">Locked in plan: $62,500 (34 days remaining)</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:.8rem;color:var(--c-text-3);margin-bottom:.25rem;">Daily Limit</div>
+          <div style="font-weight:700;font-size:1.1rem;">$25,000</div>
+          <div style="font-size:.75rem;color:var(--c-text-3);">Used today: $0</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Amount -->
+      <div id="step1">
+        <div class="form-group">
+          <label class="form-label">Amount to Withdraw</label>
+          <div class="amount-input-wrap">
+            <span>$</span>
+            <input type="number" id="withdraw-amount" placeholder="0.00" oninput="updateConfirm()">
+          </div>
+          <div class="pct-btns">
+            <button class="pct-btn" onclick="setPct(25)">25%</button>
+            <button class="pct-btn" onclick="setPct(50)">50%</button>
+            <button class="pct-btn" onclick="setPct(75)">75%</button>
+            <button class="pct-btn" onclick="setPct(100)">Max</button>
+          </div>
+        </div>
+
+        <!-- Withdrawal method -->
+        <div class="form-group">
+          <label class="form-label">Withdrawal Method</label>
+
+          <div class="method-opt selected" onclick="selectMethod(this,'crypto')">
+            <div class="left">
+              <div class="method-icon">₿</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">Crypto Wallet</div>
+                <div style="font-size:.78rem;color:var(--c-text-3);">BTC, ETH, USDC, BNB, SOL</div>
+              </div>
+            </div>
+            <div class="radio-dot"></div>
+          </div>
+          <div class="dest-panel active" id="dest-crypto">
+            <div class="form-group" style="margin-bottom:.75rem;">
+              <label class="form-label">Select Coin</label>
+              <select>
+                <option>Bitcoin (BTC)</option><option>Ethereum (ETH)</option>
+                <option>USD Coin (USDC)</option><option>BNB</option><option>Solana (SOL)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">Destination Wallet Address</label>
+              <input type="text" placeholder="bc1q… or 0x…" class="mono" style="font-size:.82rem;">
+              <div class="form-hint">Double-check your address. Crypto transactions are irreversible.</div>
+            </div>
+          </div>
+
+          <div class="method-opt" onclick="selectMethod(this,'bank')">
+            <div class="left">
+              <div class="method-icon">🏦</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">Bank Account (ACH/Wire)</div>
+                <div style="font-size:.78rem;color:var(--c-text-3);">3–5 business days</div>
+              </div>
+            </div>
+            <div class="radio-dot"></div>
+          </div>
+          <div class="dest-panel" id="dest-bank">
+            <div class="form-group" style="margin-bottom:.75rem;">
+              <label class="form-label">Bank Account</label>
+              <select><option>Chase Bank ●●●● 4821 (Checking)</option><option>+ Add new bank account</option></select>
+            </div>
+          </div>
+
+          <div class="method-opt" onclick="selectMethod(this,'usdc')">
+            <div class="left">
+              <div class="method-icon">◈</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">USDC Stablecoin</div>
+                <div style="font-size:.78rem;color:var(--c-text-3);">Instant — no market exposure</div>
+              </div>
+            </div>
+            <div class="radio-dot"></div>
+          </div>
+          <div class="dest-panel" id="dest-usdc">
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="form-label">USDC Wallet Address (ERC-20)</label>
+              <input type="text" placeholder="0x…" class="mono" style="font-size:.82rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Memo -->
+        <div class="form-group">
+          <label class="form-label">Note / Memo <span style="color:var(--c-text-3);font-weight:400;">(optional)</span></label>
+          <input type="text" placeholder="e.g. Monthly withdrawal">
+        </div>
+
+        <!-- Confirm summary -->
+        <div class="confirm-box" id="confirm-box" style="display:none;">
+          <h4 class="heading-3" style="margin-bottom:1rem;">Withdrawal Summary</h4>
+          <div class="confirm-row"><span class="text-muted">Requested Amount</span><span id="c-amount" style="font-weight:600;">$0.00</span></div>
+          <div class="confirm-row"><span class="text-muted">Network Fee</span><span id="c-fee" style="color:var(--c-text-2);">~$12.00</span></div>
+          <div class="confirm-row"><span class="text-muted">Processing Time</span><span style="color:var(--c-text-2);">Within 24 hours</span></div>
+          <div class="confirm-row"><span>You Will Receive</span><span id="c-receive" class="text-teal">$0.00</span></div>
+        </div>
+
+        <div class="alert alert-warning" style="margin-bottom:1.5rem;">
+          <span>⚠️</span>
+          <span>Withdrawals are processed within 24–48 hours after admin review. Principal locked in investment plans requires waiting until the lock-in period ends.</span>
+        </div>
+
+        <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;" onclick="submitWithdraw()">
+          🔒 Submit Withdrawal Request
+        </button>
+      </div>
+
+      <!-- Recent withdrawals -->
+      <div style="margin-top:3rem;">
+        <h3 class="heading-3" style="margin-bottom:1.25rem;">Recent Withdrawals</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Method</th><th>Amount</th><th>Status</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mar 28, 2026</td><td>ETH Wallet</td>
+                <td style="color:var(--c-red);font-weight:600;">-$4,588.98</td>
+                <td><span class="badge badge-teal">Completed</span></td>
+                <td class="text-muted" style="font-size:.82rem;">1.2 ETH</td>
+              </tr>
+              <tr>
+                <td>Feb 15, 2026</td><td>Bank ACH</td>
+                <td style="color:var(--c-red);font-weight:600;">-$2,000.00</td>
+                <td><span class="badge badge-teal">Completed</span></td>
+                <td class="text-muted" style="font-size:.82rem;">Chase ●●●● 4821</td>
+              </tr>
+              <tr>
+                <td>Jan 5, 2026</td><td>USDC</td>
+                <td style="color:var(--c-red);font-weight:600;">-$5,000.00</td>
+                <td><span class="badge badge-teal">Completed</span></td>
+                <td class="text-muted" style="font-size:.82rem;">5,000 USDC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../static/js/main.js"></script>
+<script>
+  const MAX = 6820.25;
+  function setPct(pct) {
+    const amt = (MAX * pct / 100).toFixed(2);
+    document.getElementById('withdraw-amount').value = amt;
+    updateConfirm();
+  }
+  function updateConfirm() {
+    const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+    const fee = 12;
+    const box = document.getElementById('confirm-box');
+    box.style.display = amt > 0 ? 'block' : 'none';
+    document.getElementById('c-amount').textContent = '$' + amt.toFixed(2);
+    document.getElementById('c-receive').textContent = '$' + Math.max(0, amt - fee).toFixed(2);
+  }
+  function selectMethod(el, method) {
+    document.querySelectorAll('.method-opt').forEach(o => o.classList.remove('selected'));
+    document.querySelectorAll('.dest-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('selected');
+    document.getElementById('dest-' + method).classList.add('active');
+  }
+  function submitWithdraw() {
+    const amt = parseFloat(document.getElementById('withdraw-amount').value);
+    if (!amt || amt < 10) { Toast.show('Please enter a valid amount (min $10)', 'error'); return; }
+    if (amt > MAX) { Toast.show('Amount exceeds available balance', 'error'); return; }
+    Toast.show('Withdrawal request submitted! You will be notified once processed.', 'success');
+    document.getElementById('withdraw-amount').value = '';
+    document.getElementById('confirm-box').style.display = 'none';
+  }
+</script>
+</body>
+</html>

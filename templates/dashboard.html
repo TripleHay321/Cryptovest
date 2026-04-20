@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — NexVault</title>
+  <link rel="stylesheet" href="../static/css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .app-layout { display: flex; min-height: 100vh; }
+    .main-content { margin-left: 260px; flex: 1; background: var(--c-bg); }
+    .page-header { padding: 1.25rem 2rem; border-bottom: 1px solid var(--c-border); display: flex; align-items: center; justify-content: space-between; background: var(--c-bg); position: sticky; top: 0; z-index: 50; }
+    .page-body { padding: 2rem; }
+    .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 99; display: none; }
+    .sidebar-overlay.active { display: block; }
+    @media (max-width: 1024px) { .main-content { margin-left: 0; } }
+
+    .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+    @media (max-width: 1200px) { .stat-cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .stat-cards { grid-template-columns: 1fr; } }
+
+    .chart-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; margin-bottom: 2rem; }
+    @media (max-width: 960px) { .chart-grid { grid-template-columns: 1fr; } }
+
+    .portfolio-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .875rem 0;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .portfolio-item:last-child { border-bottom: none; }
+    .coin-icon-sm {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .95rem; flex-shrink: 0;
+    }
+
+    .quick-action {
+      display: flex; flex-direction: column; align-items: center;
+      gap: .5rem; padding: 1.25rem; border-radius: var(--r-lg);
+      border: 1px solid var(--c-border); background: var(--grad-surface);
+      cursor: pointer; transition: all var(--t-base);
+      text-decoration: none; color: var(--c-text);
+    }
+    .quick-action:hover { border-color: var(--c-gold); background: var(--c-gold-dim); color: var(--c-gold); }
+    .quick-action .icon { font-size: 1.5rem; }
+    .quick-action .label { font-size: .8rem; font-weight: 600; text-align: center; }
+
+    .tx-row { display: flex; align-items: center; gap: 1rem; padding: .875rem 0; border-bottom: 1px solid var(--c-border); }
+    .tx-row:last-child { border-bottom: none; }
+    .tx-icon {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .tx-icon.deposit  { background: var(--c-teal-dim); }
+    .tx-icon.withdraw { background: var(--c-red-dim); }
+    .tx-icon.earning  { background: var(--c-gold-dim); }
+
+    .investment-plan-card {
+      background: linear-gradient(135deg, var(--c-surface) 0%, rgba(240,180,41,0.08) 100%);
+      border: 1px solid rgba(240,180,41,0.3);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+    }
+    .notification-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; border-radius: 50%; background: var(--c-red); border: 2px solid var(--c-bg); }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">N</div>
+        NexVault
+      </a>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="sidebar-link active"><span class="icon">📊</span> Dashboard</a>
+      <a href="portfolio.html" class="sidebar-link"><span class="icon">💼</span> Portfolio</a>
+      <a href="investments.html" class="sidebar-link"><span class="icon">📈</span> Investments</a>
+      <a href="deposit.html" class="sidebar-link"><span class="icon">⬇️</span> Deposit</a>
+      <a href="withdraw.html" class="sidebar-link"><span class="icon">⬆️</span> Withdraw</a>
+      <a href="transactions.html" class="sidebar-link"><span class="icon">📋</span> Transactions</a>
+      <div class="sidebar-section-label">Account</div>
+      <a href="profile.html" class="sidebar-link"><span class="icon">👤</span> Profile</a>
+      <a href="settings.html" class="sidebar-link"><span class="icon">⚙️</span> Settings</a>
+      <a href="support.html" class="sidebar-link"><span class="icon">💬</span> Support</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.875rem;">
+        <div class="avatar" style="width:38px;height:38px;border-radius:50%;background:var(--grad-gold);display:flex;align-items:center;justify-content:center;font-weight:700;color:#09090f;font-size:.85rem;flex-shrink:0;">MK</div>
+        <div style="min-width:0;">
+          <div style="font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Marcus K.</div>
+          <div style="font-size:.75rem;color:var(--c-text-3);">Growth Plan</div>
+        </div>
+      </div>
+      <a href="login.html" class="btn btn-ghost" style="width:100%;justify-content:center;font-size:.85rem;">Sign Out</a>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" onclick="document.querySelector('.sidebar').classList.remove('open');this.classList.remove('active');"></div>
+
+  <!-- ── MAIN ───────────────────────────────────────────── -->
+  <main class="main-content">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <button class="sidebar-toggle btn btn-ghost" style="display:none;" onclick="document.querySelector('.sidebar').classList.toggle('open');document.querySelector('.sidebar-overlay').classList.toggle('active');">☰</button>
+        <div>
+          <h1 style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;">Good morning, Marcus 👋</h1>
+          <div style="font-size:.8rem;color:var(--c-text-3);">Friday, 03 April 2026 — Portfolio is performing well</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="display:flex;align-items:center;gap:.5rem;padding:.5rem .875rem;background:var(--c-teal-dim);border:1px solid rgba(0,212,170,.2);border-radius:var(--r-pill);font-size:.8rem;font-weight:600;color:var(--c-teal);">
+          <div class="glow-dot"></div> Live
+        </div>
+        <button class="theme-toggle"><span class="theme-icon">☀️</span></button>
+        <div style="position:relative;">
+          <button class="btn btn-ghost" style="font-size:1.2rem;padding:.5rem;">🔔</button>
+          <div class="notification-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- STAT CARDS -->
+      <div class="stat-cards">
+        <div class="stat-card card-gold animate-fadeUp">
+          <div class="stat-label">Total Portfolio Value</div>
+          <div class="stat-value text-gold" data-count="84230.50" data-prefix="$">$0</div>
+          <div class="stat-change up">▲ +12.4% this month</div>
+        </div>
+        <div class="stat-card animate-fadeUp delay-1">
+          <div class="stat-label">Total Invested</div>
+          <div class="stat-value" data-count="62500" data-prefix="$">$0</div>
+          <div class="stat-change up">▲ Active — Growth Plan</div>
+        </div>
+        <div class="stat-card card-teal animate-fadeUp delay-2">
+          <div class="stat-label">Total Earnings</div>
+          <div class="stat-value text-teal" data-count="21730.50" data-prefix="$">$0</div>
+          <div class="stat-change up">▲ +$3,241 this month</div>
+        </div>
+        <div class="stat-card animate-fadeUp delay-3">
+          <div class="stat-label">Available Balance</div>
+          <div class="stat-value" data-count="6820.25" data-prefix="$">$0</div>
+          <div class="stat-change" style="color:var(--c-text-2);">Ready to withdraw</div>
+        </div>
+      </div>
+
+      <!-- CHART + ALLOCATION -->
+      <div class="chart-grid">
+        <div class="card" style="padding:1.5rem;">
+          <div class="flex-between" style="margin-bottom:1.25rem;">
+            <div>
+              <h3 class="heading-3">Portfolio Performance</h3>
+              <p class="text-muted" style="font-size:.8rem;">Growth Plan — 14 months</p>
+            </div>
+            <div style="display:flex;gap:.5rem;">
+              <button class="btn btn-sm" id="chart-1m" onclick="switchPeriod('1m',this)" style="border:1px solid var(--c-gold);color:var(--c-gold);background:var(--c-gold-dim);border-radius:var(--r-pill);padding:.35rem .875rem;font-size:.78rem;font-weight:600;">1M</button>
+              <button class="btn btn-sm btn-ghost" id="chart-3m" onclick="switchPeriod('3m',this)" style="border-radius:var(--r-pill);padding:.35rem .875rem;font-size:.78rem;font-weight:600;">3M</button>
+              <button class="btn btn-sm btn-ghost" id="chart-1y" onclick="switchPeriod('1y',this)" style="border-radius:var(--r-pill);padding:.35rem .875rem;font-size:.78rem;font-weight:600;">1Y</button>
+            </div>
+          </div>
+          <div style="height:240px;position:relative;"><canvas id="perfChart"></canvas></div>
+        </div>
+
+        <div class="card" style="padding:1.5rem;">
+          <h3 class="heading-3" style="margin-bottom:1.25rem;">Allocation</h3>
+          <div style="height:180px;position:relative;"><canvas id="allocChart"></canvas></div>
+          <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;">
+            <div class="flex-between" style="font-size:.82rem;"><div style="display:flex;align-items:center;gap:.5rem;"><div style="width:10px;height:10px;border-radius:2px;background:#f7931a;"></div>Bitcoin</div><span style="color:var(--c-text-2);">40%</span></div>
+            <div class="flex-between" style="font-size:.82rem;"><div style="display:flex;align-items:center;gap:.5rem;"><div style="width:10px;height:10px;border-radius:2px;background:#627eea;"></div>Ethereum</div><span style="color:var(--c-text-2);">30%</span></div>
+            <div class="flex-between" style="font-size:.82rem;"><div style="display:flex;align-items:center;gap:.5rem;"><div style="width:10px;height:10px;border-radius:2px;background:#00d4aa;"></div>DeFi Yield</div><span style="color:var(--c-text-2);">20%</span></div>
+            <div class="flex-between" style="font-size:.82rem;"><div style="display:flex;align-items:center;gap:.5rem;"><div style="width:10px;height:10px;border-radius:2px;background:#9b59b6;"></div>Other</div><span style="color:var(--c-text-2);">10%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS + ACTIVE PLAN -->
+      <div class="grid-2" style="gap:1.25rem;margin-bottom:2rem;">
+        <div class="card" style="padding:1.5rem;">
+          <h3 class="heading-3" style="margin-bottom:1.25rem;">Quick Actions</h3>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;">
+            <a href="deposit.html" class="quick-action"><span class="icon">⬇️</span><span class="label">Deposit</span></a>
+            <a href="withdraw.html" class="quick-action"><span class="icon">⬆️</span><span class="label">Withdraw</span></a>
+            <a href="investments.html" class="quick-action"><span class="icon">📈</span><span class="label">Invest</span></a>
+            <a href="transactions.html" class="quick-action"><span class="icon">📋</span><span class="label">History</span></a>
+          </div>
+        </div>
+        <div class="investment-plan-card">
+          <div class="flex-between" style="margin-bottom:1rem;">
+            <div>
+              <div class="badge badge-gold" style="margin-bottom:.5rem;">Active Plan</div>
+              <h3 class="heading-3">Growth Plan</h3>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--c-gold);">18%</div>
+              <div style="font-size:.75rem;color:var(--c-text-3);">est. annual return</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.625rem;font-size:.85rem;color:var(--c-text-2);margin-bottom:1.25rem;">
+            <div class="flex-between"><span>Invested Amount</span><span style="color:var(--c-text);font-weight:600;">$62,500.00</span></div>
+            <div class="flex-between"><span>Lock-in Period</span><span style="color:var(--c-text);font-weight:600;">60 days</span></div>
+            <div class="flex-between"><span>Days Remaining</span><span style="color:var(--c-gold);font-weight:600;">34 days</span></div>
+            <div class="flex-between"><span>Next Payout</span><span style="color:var(--c-teal);font-weight:600;">Tomorrow</span></div>
+          </div>
+          <div style="margin-bottom:.5rem;display:flex;justify-content:space-between;font-size:.78rem;color:var(--c-text-3);">
+            <span>Lock-in Progress</span><span>43%</span>
+          </div>
+          <div class="progress"><div class="progress-fill" style="width:43%"></div></div>
+        </div>
+      </div>
+
+      <!-- PORTFOLIO HOLDINGS + RECENT TX -->
+      <div class="grid-2" style="gap:1.25rem;">
+        <div class="card" style="padding:1.5rem;">
+          <div class="flex-between" style="margin-bottom:1.25rem;">
+            <h3 class="heading-3">Holdings</h3>
+            <a href="portfolio.html" style="font-size:.82rem;color:var(--c-gold);">View all →</a>
+          </div>
+          <div class="portfolio-item">
+            <div style="display:flex;align-items:center;gap:.875rem;">
+              <div class="coin-icon-sm" style="background:#f7931a22;color:#f7931a;">₿</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">Bitcoin</div>
+                <div style="font-size:.75rem;color:var(--c-text-3);" class="mono">0.382 BTC</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:600;font-size:.9rem;" data-ticker="BTC">$26,136.71</div>
+              <div style="font-size:.75rem;color:var(--c-teal);font-weight:600;">+2.41%</div>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div style="display:flex;align-items:center;gap:.875rem;">
+              <div class="coin-icon-sm" style="background:#627eea22;color:#627eea;">Ξ</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">Ethereum</div>
+                <div style="font-size:.75rem;color:var(--c-text-3);" class="mono">4.92 ETH</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:600;font-size:.9rem;">$18,814.81</div>
+              <div style="font-size:.75rem;color:var(--c-teal);font-weight:600;">+1.82%</div>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div style="display:flex;align-items:center;gap:.875rem;">
+              <div class="coin-icon-sm" style="background:#00d4aa22;color:#00d4aa;">◈</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">DeFi Yield</div>
+                <div style="font-size:.75rem;color:var(--c-text-3);" class="mono">Liquidity Pool</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:600;font-size:.9rem;">$12,480.00</div>
+              <div style="font-size:.75rem;color:var(--c-teal);font-weight:600;">+3.20%</div>
+            </div>
+          </div>
+          <div class="portfolio-item">
+            <div style="display:flex;align-items:center;gap:.875rem;">
+              <div class="coin-icon-sm" style="background:#f3ba2f22;color:#f3ba2f;">◈</div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">BNB</div>
+                <div style="font-size:.75rem;color:var(--c-text-3);" class="mono">12.4 BNB</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:600;font-size:.9rem;">$6,712.12</div>
+              <div style="font-size:.75rem;color:var(--c-red);font-weight:600;">-0.63%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:1.5rem;">
+          <div class="flex-between" style="margin-bottom:1.25rem;">
+            <h3 class="heading-3">Recent Transactions</h3>
+            <a href="transactions.html" style="font-size:.82rem;color:var(--c-gold);">View all →</a>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon earning">💰</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.85rem;">Daily Earnings</div>
+              <div style="font-size:.75rem;color:var(--c-text-3);">Growth Plan • Apr 3, 2026</div>
+            </div>
+            <div style="color:var(--c-teal);font-weight:700;font-size:.9rem;">+$187.50</div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon deposit">⬇️</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.85rem;">Deposit — BTC</div>
+              <div style="font-size:.75rem;color:var(--c-text-3);">0.05 BTC • Apr 1, 2026</div>
+            </div>
+            <div style="color:var(--c-teal);font-weight:700;font-size:.9rem;">+$3,421.03</div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon earning">💰</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.85rem;">Daily Earnings</div>
+              <div style="font-size:.75rem;color:var(--c-text-3);">Growth Plan • Apr 2, 2026</div>
+            </div>
+            <div style="color:var(--c-teal);font-weight:700;font-size:.9rem;">+$183.90</div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon withdraw">⬆️</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.85rem;">Withdrawal — ETH</div>
+              <div style="font-size:.75rem;color:var(--c-text-3);">1.2 ETH • Mar 28, 2026</div>
+            </div>
+            <div style="color:var(--c-red);font-weight:700;font-size:.9rem;">-$4,588.98</div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon earning">💰</div>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.85rem;">Daily Earnings</div>
+              <div style="font-size:.75rem;color:var(--c-text-3);">Growth Plan • Mar 27, 2026</div>
+            </div>
+            <div style="color:var(--c-teal);font-weight:700;font-size:.9rem;">+$176.20</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="../static/js/main.js"></script>
+<script>
+  // Show sidebar toggle on mobile
+  if (window.innerWidth <= 1024) {
+    document.querySelector('.sidebar-toggle').style.display = 'flex';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Performance chart
+    const perfCtx = document.getElementById('perfChart').getContext('2d');
+    const labels1m = Array.from({length:30}, (_,i) => `Mar ${i+4}`);
+    const data1m = labels1m.map((_,i) => 78000 + i * 200 + Math.random() * 400 - 100);
+    window.perfChart = createAreaChart(perfCtx, labels1m, [{
+      label: 'Portfolio Value',
+      data: data1m,
+      borderColor: '#f0b429',
+      backgroundColor: ctx => { const g = ctx.chart.ctx.createLinearGradient(0,0,0,240); g.addColorStop(0,'#f0b42930'); g.addColorStop(1,'#f0b42900'); return g; },
+      fill: true, tension: 0.4, pointRadius: 0
+    }]);
+
+    // Allocation donut
+    new Chart(document.getElementById('allocChart').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Bitcoin','Ethereum','DeFi Yield','Other'],
+        datasets: [{
+          data: [40,30,20,10],
+          backgroundColor: ['#f7931a','#627eea','#00d4aa','#9b59b6'],
+          borderWidth: 0, hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '70%',
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a2e', padding: 12 } }
+      }
+    });
+
+    CryptoTicker.start(3000);
+  });
+
+  const chartData = {
+    '1m': { labels: Array.from({length:30}, (_,i) => `Mar ${i+4}`), fn: i => 78000 + i * 200 + Math.random() * 400 },
+    '3m': { labels: ['Jan','Feb','Mar'], fn: i => 68000 + i * 8000 },
+    '1y': { labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'], fn: i => 50000 + i * 3000 + Math.random() * 1000 },
+  };
+
+  function switchPeriod(period, btn) {
+    document.querySelectorAll('[id^=chart-]').forEach(b => {
+      b.style.border = ''; b.style.color = ''; b.style.background = '';
+    });
+    btn.style.border = '1px solid var(--c-gold)';
+    btn.style.color = 'var(--c-gold)';
+    btn.style.background = 'var(--c-gold-dim)';
+    const d = chartData[period];
+    window.perfChart.data.labels = d.labels;
+    window.perfChart.data.datasets[0].data = d.labels.map((_,i) => d.fn(i));
+    window.perfChart.update();
+  }
+</script>
+</body>
+</html>
